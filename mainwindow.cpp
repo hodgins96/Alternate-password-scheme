@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 
     ui->setupUi(this);
-    addbuttons(paths, words);
+    addbuttons(paths);
 }
 
 MainWindow::~MainWindow()
@@ -17,24 +17,23 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::addbuttons(std::vector<QString> path, std::vector<QString> Pass)
+void MainWindow::addbuttons(std::vector<QString> path)
 {
     for(int i =0; i<5;i++){
         for(int k =0; k<5;k++){
-            if(i==4 && k==0||i==4 && k==4){
+            if((i==4 && k==0) || (i==4 && k==4)){
                 ui->gridLayout_2->spacerItem();
             }else{
-                QPixmap pix("/home/student/Documents/3008/3008Project/Assets/"+path[0]);
+                QPixmap pix("/home/student/Documents/3008/3008-Project2/Assets/"+path[(i*5)+k]+".png");
                 QIcon ButtonIcon(pix);
-                int w = ui->Piclbl->width()/4;
-                int h = ui->Piclbl->height()/4;
 
-
+                int w = pix.width()/6;
+                int h = pix.height()/6;
 
                 QPushButton* button = new QPushButton("", this);
                 button->setVisible(true);
                 button->setFlat(true);
-                connect(button, &QPushButton::clicked, [button,Pass](){
+                connect(button, &QPushButton::clicked, [button](){
                    button->setEnabled(false);
                 });
 
