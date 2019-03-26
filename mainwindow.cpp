@@ -1,13 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-QString firstPas = "temp";
-QString secondPas = "temp";
-QString thirdPas = "temp";
-QString fourthPas = "temp";
-QString fifthPas = "temp";
-
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -30,7 +23,7 @@ void MainWindow::addbuttons(std::vector<QString> path)
             if((i==4 && k==0) || (i==4 && k==4)){
                 ui->gridLayout_2->spacerItem();
             }else{
-                QPixmap pix("D:/RoyalD/Documents/Class/Winter/3008 - Human Computer Interaction/Project 2/3008-Project2/3008-Project2/Assets/"+path[(i*5)+k]+".png"); ///home/student/Documents/3008/3008-Project2
+                QPixmap pix("/Programming/3008-Project2/Assets/"+path[(i*5)+k]+".png"); ///home/student/Documents/3008/3008-Project2
                 QIcon ButtonIcon(pix);
 
                 int w = pix.width()/6;
@@ -55,7 +48,16 @@ void MainWindow::addbuttons(std::vector<QString> path)
 
 
 void MainWindow::pwdAssign(){ //verified that all fo the passwor strings are accounted for
-
+    /*Spencer TO DO:
+     * Make sure same object isnt used 5 times in a row, 4 times , 3 times?
+     * Figure out how we will be comparing / generating the passwords for the different logins
+     * such as accountOne...
+     * Super Happy Fun Time*/
+    QString firstPas;
+    QString secondPas;
+    QString thirdPas;
+    QString fourthPas;
+    QString fifthPas;
     std::srand (time(NULL)); //makes them random
 
     int password1 = std::rand() % 24;//gets random number
@@ -108,17 +110,25 @@ void MainWindow::pwdAssign(){ //verified that all fo the passwor strings are acc
     //        qDebug() << thirdPas;
     //    }
     //}
+    //setting into the vector for storing ~~Different functions for different logins?~~
+    //have if else statements to see which password it is then compare that way // passing variables allong?
+    givenAccountOne.push_back(firstPas);
+    givenAccountOne.push_back(secondPas);
+    givenAccountOne.push_back(thirdPas);
+    givenAccountOne.push_back(fourthPas);
+    givenAccountOne.push_back(fifthPas);
 
-
+    //testing andrews function
+    qDebug() << validPassword(givenAccountOne); //should trigger true because their same vector
 }
 
-bool validPassword(std::vector<QString> enteredPassword){
+bool MainWindow::validPassword(std::vector<QString> enteredPassword){
 
-    if (enteredPassword[0].compare(firstPas)){
-        if (enteredPassword[1].compare(secondPas)){
-            if (enteredPassword[2].compare(thirdPas)){
-                if (enteredPassword[3].compare(fourthPas)){
-                    if (enteredPassword[4].compare(fifthPas))
+    if (enteredPassword[0].compare(givenAccountOne[0])==0){ //works tested with the same array inputed
+        if (enteredPassword[1].compare(givenAccountOne[1])==0){
+            if (enteredPassword[2].compare(givenAccountOne[2])==0){
+                if (enteredPassword[3].compare(givenAccountOne[3])==0){
+                    if (enteredPassword[4].compare(givenAccountOne[4])==0)
                         return true;
                 }
             }

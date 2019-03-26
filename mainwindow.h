@@ -35,6 +35,9 @@ private:
                               "BrightonRock","DoingAllRight","FatherToSon",
                               "FunnyHowLoveIs","GreatKingRat","","Jesus","KeepYourselfAlive","KillerQueen",""};
     Ui::MainWindow *ui;
+    std::vector<QString> givenAccountOne;
+    std::vector<QString> givenAccountTwo;
+    std::vector<QString> givenAccountThree;
    //used for assigning
 
 };
