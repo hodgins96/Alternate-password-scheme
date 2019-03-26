@@ -26,6 +26,7 @@ public:
     ~MainWindow();
     void addbuttons(std::vector<QString> path);
     void pwdAssign();
+    bool validPassword(std::vector<QString> enteredPassword);
 private:
     std::vector<QString> paths{
                               "Nevermore","OgreBattle","Procession","SevenSeasofRhye","SomeDayOneDay",
@@ -35,11 +36,7 @@ private:
                               "FunnyHowLoveIs","GreatKingRat","","Jesus","KeepYourselfAlive","KillerQueen",""};
     Ui::MainWindow *ui;
    //used for assigning
-    QString firstPas;
-    QString secondPas;
-    QString thirdPas;
-    QString fourthPas;
-    QString fifthPas;
+
 };
 
 #endif // MAINWINDOW_H
