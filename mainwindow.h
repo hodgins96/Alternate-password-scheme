@@ -27,6 +27,11 @@ public:
     void addbuttons(std::vector<QString> path);
     void pwdAssign();
     bool validPassword(std::vector<QString> enteredPassword);
+private slots:
+    void on_pushButton_clicked();
+
+    void on_pushButton_4_clicked();
+
 private:
     std::vector<QString> paths{
                               "Nevermore","OgreBattle","Procession","SevenSeasofRhye","SomeDayOneDay",
@@ -39,9 +44,8 @@ private:
     std::vector<QString> givenAccountTwo;
     std::vector<QString> givenAccountThree;
    //used for assigning
-    std::vector<QString> userSubmitOne;
-    std::vector<QString> userSubmitTwo;
-    std::vector<QString> userSubmitThree;
+    std::vector<QString> userSubmit;
+
 
 };
 

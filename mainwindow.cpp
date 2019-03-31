@@ -29,13 +29,13 @@ void MainWindow::addbuttons(std::vector<QString> path)
                 int w = pix.width()/6;
                 int h = pix.height()/6;
 
-                QPushButton* button = new QPushButton("", this);
+                QPushButton* button = new QPushButton(path[(i*5)+k], this);
                 button->setVisible(true);
                 button->setFlat(true);
                 QString temp = path[(i*5)+k];
-                connect(button, &QPushButton::clicked,[button,temp](){ //button code lamda function
-                   button->setEnabled(false);
-                   qDebug()<<temp;
+                connect(button, &QPushButton::clicked,[this,button,temp](){ //button code lamda function
+                  // button->setEnabled(false);
+                   userSubmit.push_back(temp);
 
                 });
 
@@ -144,3 +144,17 @@ bool MainWindow::validPassword(std::vector<QString> enteredPassword){
 
 
 
+
+void MainWindow::on_pushButton_clicked()
+{
+    if(validPassword(userSubmit)){//password is correct
+        qDebug()<<"CORRECT!!!";
+    }else{
+        return;
+    }
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    ui->stackedWidget->setCurrentWidget(ui->EnterPassPage);
+}
