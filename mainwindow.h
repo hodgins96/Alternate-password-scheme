@@ -39,6 +39,9 @@ private:
     std::vector<QString> givenAccountTwo;
     std::vector<QString> givenAccountThree;
    //used for assigning
+    std::vector<QString> userSubmitOne;
+    std::vector<QString> userSubmitTwo;
+    std::vector<QString> userSubmitThree;
 
 };
 

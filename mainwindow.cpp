@@ -32,8 +32,11 @@ void MainWindow::addbuttons(std::vector<QString> path)
                 QPushButton* button = new QPushButton("", this);
                 button->setVisible(true);
                 button->setFlat(true);
-                connect(button, &QPushButton::clicked, [button](){
+                QString temp = path[(i*5)+k];
+                connect(button, &QPushButton::clicked,[button,temp](){ //button code lamda function
                    button->setEnabled(false);
+                   qDebug()<<temp;
+
                 });
 
                 button->setIcon(ButtonIcon);
