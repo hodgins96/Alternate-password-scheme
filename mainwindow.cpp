@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 
     ui->setupUi(this);
+    std::srand (time(NULL)); //makes them random
     addbuttons(paths);
 }
 
@@ -15,6 +16,37 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::genPasswords(){
+    pwdAssign(BankPass);
+    for(int i = 0; i<5; i++){
+        ShowPasswords((*BankPass)[i], ui->passLayout_1);
+    }
+    pwdAssign(ShoppingPass);
+    for(int i = 0; i<5; i++){
+        ShowPasswords((*ShoppingPass)[i], ui->passLayout_2);
+    }
+    pwdAssign(EMailPass);
+    for(int i = 0; i<5; i++){
+        ShowPasswords((*EMailPass)[i], ui->passLayout_3);
+    }
+}
+
+void MainWindow::ShowPasswords(QString pics, QHBoxLayout *layout){
+                QPixmap pix("/home/student/Documents/3008/3008-Project2/Assets/"+pics+".png"); // /home/student/Documents/3008/3008-Project2/Assets/ // /Programming/3008-Project2/Assets/
+                QIcon ButtonIcon(pix);
+
+                int w = pix.width()/6;
+                int h = pix.height()/6;
+
+                QPushButton* button = new QPushButton("", this);
+                button->setVisible(true);
+                button->setFlat(true);
+
+                button->setIcon(ButtonIcon);
+                button->setIconSize(pix.scaled(w,h, Qt::KeepAspectRatio).size());
+
+                layout->addWidget(button);
+}
 
 void MainWindow::addbuttons(std::vector<QString> path)
 {
@@ -23,7 +55,7 @@ void MainWindow::addbuttons(std::vector<QString> path)
             if((i==4 && k==0) || (i==4 && k==4)){
                 ui->gridLayout_2->spacerItem();
             }else{
-                QPixmap pix("/Programming/3008-Project2/Assets/"+path[(i*5)+k]+".png"); ///home/student/Documents/3008/3008-Project2
+                QPixmap pix("/home/student/Documents/3008/3008-Project2/Assets/"+path[(i*5)+k]+".png"); // /home/student/Documents/3008/3008-Project2/Assets/ // /Programming/3008-Project2/Assets/
                 QIcon ButtonIcon(pix);
 
                 int w = pix.width()/6;
@@ -48,20 +80,12 @@ void MainWindow::addbuttons(std::vector<QString> path)
     }
 }
 
-
-
-void MainWindow::pwdAssign(){ //verified that all fo the passwor strings are accounted for
+void MainWindow::pwdAssign(std::vector<QString> *givenAccountOne){ //verified that all fo the passwor strings are accounted for
     /*Spencer TO DO:
      * Make sure same object isnt used 5 times in a row, 4 times , 3 times?
      * Figure out how we will be comparing / generating the passwords for the different logins
      * such as accountOne...
      * Super Happy Fun Time*/
-    QString firstPas;
-    QString secondPas;
-    QString thirdPas;
-    QString fourthPas;
-    QString fifthPas;
-    std::srand (time(NULL)); //makes them random
 
     int password1 = std::rand() % 24;//gets random number
     while(password1 == 20 ){ //get rid of black string in vector
@@ -115,17 +139,20 @@ void MainWindow::pwdAssign(){ //verified that all fo the passwor strings are acc
     //}
     //setting into the vector for storing ~~Different functions for different logins?~~
     //have if else statements to see which password it is then compare that way // passing variables allong?
-    givenAccountOne.push_back(firstPas);
-    givenAccountOne.push_back(secondPas);
-    givenAccountOne.push_back(thirdPas);
-    givenAccountOne.push_back(fourthPas);
-    givenAccountOne.push_back(fifthPas);
+    qDebug()<<"prepushed";
+    (*givenAccountOne).push_back(firstPas);
+    (*givenAccountOne).push_back(secondPas);
+    (*givenAccountOne).push_back(thirdPas);
+    (*givenAccountOne).push_back(fourthPas);
+    (*givenAccountOne).push_back(fifthPas);
+
+    qDebug()<<"postpushed";
 
     //testing andrews function
-    qDebug() << validPassword(givenAccountOne); //should trigger true because their same vector
+    //qDebug() << validPassword(givenAccountOne, givenAccountOne); //should trigger true because their same vector
 }
 
-bool MainWindow::validPassword(std::vector<QString> enteredPassword){
+bool MainWindow::validPassword(std::vector<QString> enteredPassword, std::vector<QString> givenAccountOne){
 
     if (enteredPassword[0].compare(givenAccountOne[0])==0){ //works tested with the same array inputed
         if (enteredPassword[1].compare(givenAccountOne[1])==0){
@@ -137,8 +164,6 @@ bool MainWindow::validPassword(std::vector<QString> enteredPassword){
             }
         }
     }
-
-
     return false;
 }
 
@@ -147,14 +172,20 @@ bool MainWindow::validPassword(std::vector<QString> enteredPassword){
 
 void MainWindow::on_pushButton_clicked()
 {
-    if(validPassword(userSubmit)){//password is correct
-        qDebug()<<"CORRECT!!!";
-    }else{
-        return;
-    }
+//    if(validPassword(userSubmit)){//password is correct
+//        qDebug()<<"CORRECT!!!";
+//    }else{
+//        return;
+//    }
 }
 
 void MainWindow::on_pushButton_4_clicked()
 {
     ui->stackedWidget->setCurrentWidget(ui->EnterPassPage);
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+ ui->stackedWidget->setCurrentWidget(ui->GenPassPage);
+ genPasswords();
 }
