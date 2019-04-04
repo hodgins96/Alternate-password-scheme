@@ -7,8 +7,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 
     ui->setupUi(this);
+    ui->stackedWidget->setCurrentWidget(ui->page);
     std::srand (time(NULL)); //makes them random
-    addbuttons(paths);
+    addbuttons(paths, ui->gridLayout_2);
 }
 
 MainWindow::~MainWindow()
@@ -16,44 +17,40 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::genPasswords(){
-    pwdAssign(BankPass);
+void MainWindow::genPasswords(std::vector<QString> *Acc){
+    pwdAssign(Acc);
     for(int i = 0; i<5; i++){
-        ShowPasswords((*BankPass)[i], ui->passLayout_1);
-    }
-    pwdAssign(ShoppingPass);
-    for(int i = 0; i<5; i++){
-        ShowPasswords((*ShoppingPass)[i], ui->passLayout_2);
-    }
-    pwdAssign(EMailPass);
-    for(int i = 0; i<5; i++){
-        ShowPasswords((*EMailPass)[i], ui->passLayout_3);
+        //ShowPasswords(, ui->passLayout_1);
+        QPixmap pix("/home/student/Documents/3008/3008-Project2/Assets/"+(*Acc)[i]+".png"); // /home/student/Documents/3008/3008-Project2/Assets/ // /Programming/3008-Project2/Assets/
+        QIcon ButtonIcon(pix);
+
+        int w = pix.width()/6;
+        int h = pix.height()/6;
+        if(i==0){
+            ui->showPass_1->setIcon(ButtonIcon);
+            ui->showPass_1->setIconSize(pix.scaled(w,h, Qt::KeepAspectRatio).size());
+        }else if(i==1){
+            ui->showPass_2->setIcon(ButtonIcon);
+            ui->showPass_2->setIconSize(pix.scaled(w,h, Qt::KeepAspectRatio).size());
+        }else if(i==2){
+            ui->showPass_3->setIcon(ButtonIcon);
+            ui->showPass_3->setIconSize(pix.scaled(w,h, Qt::KeepAspectRatio).size());
+        }else if(i==3){
+            ui->showPass_4->setIcon(ButtonIcon);
+            ui->showPass_4->setIconSize(pix.scaled(w,h, Qt::KeepAspectRatio).size());
+        }else if(i==4){
+            ui->showPass_5->setIcon(ButtonIcon);
+            ui->showPass_5->setIconSize(pix.scaled(w,h, Qt::KeepAspectRatio).size());
+        }
     }
 }
 
-void MainWindow::ShowPasswords(QString pics, QHBoxLayout *layout){
-                QPixmap pix("/home/student/Documents/3008/3008-Project2/Assets/"+pics+".png"); // /home/student/Documents/3008/3008-Project2/Assets/ // /Programming/3008-Project2/Assets/
-                QIcon ButtonIcon(pix);
-
-                int w = pix.width()/6;
-                int h = pix.height()/6;
-
-                QPushButton* button = new QPushButton("", this);
-                button->setVisible(true);
-                button->setFlat(true);
-
-                button->setIcon(ButtonIcon);
-                button->setIconSize(pix.scaled(w,h, Qt::KeepAspectRatio).size());
-
-                layout->addWidget(button);
-}
-
-void MainWindow::addbuttons(std::vector<QString> path)
+void MainWindow::addbuttons(std::vector<QString> path, QGridLayout *layout)
 {
     for(int i =0; i<5;i++){
         for(int k =0; k<5;k++){
             if((i==4 && k==0) || (i==4 && k==4)){
-                ui->gridLayout_2->spacerItem();
+                layout->spacerItem();
             }else{
                 QPixmap pix("/home/student/Documents/3008/3008-Project2/Assets/"+path[(i*5)+k]+".png"); // /home/student/Documents/3008/3008-Project2/Assets/ // /Programming/3008-Project2/Assets/
                 QIcon ButtonIcon(pix);
@@ -67,18 +64,22 @@ void MainWindow::addbuttons(std::vector<QString> path)
                 QString temp = path[(i*5)+k];
                 connect(button, &QPushButton::clicked,[this,button,temp](){ //button code lamda function
                   // button->setEnabled(false);
-                   userSubmit.push_back(temp);
+                   MainWindow::addSubmit(temp);
 
                 });
 
                 button->setIcon(ButtonIcon);
                 button->setIconSize(pix.scaled(w,h, Qt::KeepAspectRatio).size());
 
-                    ui->gridLayout_2->addWidget(button,i,k);
+                    layout->addWidget(button,i,k);
                 }
         }
     }
 }
+void MainWindow::addSubmit(QString temp){
+    userSubmit->push_back(temp);
+}
+
 
 void MainWindow::pwdAssign(std::vector<QString> *givenAccountOne){ //verified that all fo the passwor strings are accounted for
     /*Spencer TO DO:
@@ -139,26 +140,24 @@ void MainWindow::pwdAssign(std::vector<QString> *givenAccountOne){ //verified th
     //}
     //setting into the vector for storing ~~Different functions for different logins?~~
     //have if else statements to see which password it is then compare that way // passing variables allong?
-    qDebug()<<"prepushed";
+
     (*givenAccountOne).push_back(firstPas);
     (*givenAccountOne).push_back(secondPas);
     (*givenAccountOne).push_back(thirdPas);
     (*givenAccountOne).push_back(fourthPas);
     (*givenAccountOne).push_back(fifthPas);
 
-    qDebug()<<"postpushed";
-
     //testing andrews function
     //qDebug() << validPassword(givenAccountOne, givenAccountOne); //should trigger true because their same vector
 }
 
-bool MainWindow::validPassword(std::vector<QString> enteredPassword, std::vector<QString> givenAccountOne){
+bool MainWindow::validPassword(std::vector<QString> *enteredPassword, std::vector<QString> *givenAccountOne){
 
-    if (enteredPassword[0].compare(givenAccountOne[0])==0){ //works tested with the same array inputed
-        if (enteredPassword[1].compare(givenAccountOne[1])==0){
-            if (enteredPassword[2].compare(givenAccountOne[2])==0){
-                if (enteredPassword[3].compare(givenAccountOne[3])==0){
-                    if (enteredPassword[4].compare(givenAccountOne[4])==0)
+    if ((*enteredPassword)[0].compare((*givenAccountOne)[0])==0){ //works tested with the same array inputed
+        if ((*enteredPassword)[1].compare((*givenAccountOne)[1])==0){
+            if ((*enteredPassword)[2].compare((*givenAccountOne)[2])==0){
+                if ((*enteredPassword)[3].compare((*givenAccountOne)[3])==0){
+                    if ((*enteredPassword)[4].compare((*givenAccountOne)[4])==0)
                         return true;
                 }
             }
@@ -167,25 +166,125 @@ bool MainWindow::validPassword(std::vector<QString> enteredPassword, std::vector
     return false;
 }
 
+void MainWindow::testingPass(){//controll method for Testing Password
+   int rando;
+   moveOn = false;
+    while(!moveOn){
+        rando = std::rand() % 3 +1;
 
-
+        if(used[0] ==false && rando == 1){
+            ui->label_2->setText("Logging Into: E-Mail");
+            qDebug()<<"1";
+            used[0]=true;
+            moveOn =true;
+        }else if(used[1]==false && rando == 2){
+            ui->label_2->setText("Logging Into: Banking");
+            qDebug()<<"2";
+            used[1]=true;
+            moveOn =true;
+        }else if(used[2]==false && rando == 3){
+            ui->label_2->setText("Logging Into: Shopping");
+            qDebug()<<"3";
+            used[2]=true;
+            moveOn =true;
+        }else if(used[0]== true && used[1] == true && used[2]==true){
+            //break;
+            qDebug()<<"finished";
+            moveOn =true;
+        }
+    }
+}
 
 void MainWindow::on_pushButton_clicked()
-{
-//    if(validPassword(userSubmit)){//password is correct
-//        qDebug()<<"CORRECT!!!";
-//    }else{
-//        return;
-//    }
+{//Test Password
+    if(ui->label_2->text().compare("Logging Into: E-Mail")==0){
+        attempt++;
+        if(attempt<3){
+            if(validPassword(userSubmit, EMailPass)){
+                userSubmit->clear();
+                qDebug()<<"Succsess";
+                attempt=0;
+                used[0]==true;
+                testingPass();
+            }
+        }else{
+            qDebug()<< "to many attempts";
+            userSubmit->clear();
+            used[0]=true;
+            attempt=0;
+            testingPass();
+        }
+    }else if(ui->label_2->text().compare("Logging Into: Banking")==0){
+        attempt++;
+        if(attempt<3){
+            if(validPassword(userSubmit, BankPass)){
+                userSubmit->clear();
+                qDebug()<<"Succsess";
+                attempt=0;
+                used[1]=true;
+                testingPass();
+            }
+        }else{
+            qDebug()<< "to many attempts";
+            userSubmit->clear();
+            used[1]=true;
+            attempt=0;
+            testingPass();
+        }
+    }else if(ui->label_2->text().compare("Logging Into: Shopping")==0){
+        attempt++;
+        if(attempt<3){
+            if(validPassword(userSubmit, ShoppingPass)){
+                userSubmit->clear();
+                qDebug()<<"Succsess";
+                attempt=0;
+                used[2]=true;
+                testingPass();
+            }
+        }else{
+            qDebug()<< "to many attempts";
+            userSubmit->clear();
+            attempt=0;
+            used[2]=true;
+            testingPass();
+        }
+    }
+    userSubmit->clear();
 }
 
 void MainWindow::on_pushButton_4_clicked()
 {
     ui->stackedWidget->setCurrentWidget(ui->EnterPassPage);
+     ui->stackedWidget->show();
+    testingPass();
 }
 
 void MainWindow::on_pushButton_3_clicked()
 {
  ui->stackedWidget->setCurrentWidget(ui->GenPassPage);
- genPasswords();
+ genPasswords(EMailPass);
+ ui->GenPasslbl->setText("Your E-Mail Password:");
+ addbuttons(paths, ui->TestgridLayout);
 }
+
+void MainWindow::on_pushButton_5_clicked(){//Testing Password
+        if(ui->GenPasslbl->text().compare("Your E-Mail Password:")==0){
+            if(validPassword(userSubmit,EMailPass)){
+                genPasswords(BankPass);
+                userSubmit->clear();
+                ui->GenPasslbl->setText("Your Banking Password:");
+               }else{qDebug()<<"Wrong Emailing Password Try, Again";userSubmit->clear();}
+        }else if(ui->GenPasslbl->text().compare("Your Banking Password:")==0){
+            if(validPassword(userSubmit,BankPass)){
+                genPasswords(ShoppingPass);
+                userSubmit->clear();
+                ui->GenPasslbl->setText("Your Shopping Password:");
+            }else{qDebug()<<"Wrong Banking Password Try, Again";userSubmit->clear();}
+        }else if(ui->GenPasslbl->text().compare("Your Shopping Password:")==0){
+            if(validPassword(userSubmit,ShoppingPass)){
+                userSubmit->clear();
+                ui->stackedWidget->setCurrentWidget(ui->page);
+            }else{qDebug()<<"Wrong Shopping Password Try, Again";userSubmit->clear();}
+        }
+        //here stuff
+    }

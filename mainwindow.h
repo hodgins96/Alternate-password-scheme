@@ -24,18 +24,13 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void addbuttons(std::vector<QString> path);
+    void addbuttons(std::vector<QString> path, QGridLayout *layout);
     void pwdAssign(std::vector<QString> *givenAccountOne);
-    bool validPassword(std::vector<QString> enteredPassword, std::vector<QString> givenAccountOne);
-    void ShowPasswords(QString pics, QHBoxLayout *layout);
-    void genPasswords();
-
-private slots:
-    void on_pushButton_clicked();
-
-    void on_pushButton_4_clicked();
-
-    void on_pushButton_3_clicked();
+    bool validPassword(std::vector<QString> *enteredPassword, std::vector<QString> *givenAccountOne);
+    void genPasswords(std::vector<QString> *Acc);
+    bool Testing = false;
+    void addSubmit(QString temp);
+    void testingPass();
 
 private:
     std::vector<QString> paths{
@@ -48,14 +43,26 @@ private:
     std::vector<QString> *BankPass = new std::vector<QString>;
     std::vector<QString> *ShoppingPass = new std::vector<QString>;
     std::vector<QString> *EMailPass = new std::vector<QString>;
-   //used for assigning
-    std::vector<QString> userSubmit;
+    std::vector<QString> *userSubmit = new std::vector<QString>;
+    std::vector<bool> used = {false,false,false};
+
+    int attempt = 0;
+    bool moveOn = false;
 
     QString firstPas;
     QString secondPas;
     QString thirdPas;
     QString fourthPas;
     QString fifthPas;
+
+private slots:
+    void on_pushButton_clicked();
+
+    void on_pushButton_4_clicked();
+
+    void on_pushButton_3_clicked();
+
+    void on_pushButton_5_clicked();
 
 
 };
