@@ -5,16 +5,31 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-
+    FileWrite("Program is Starting");
     ui->setupUi(this);
     ui->stackedWidget->setCurrentWidget(ui->page);
     std::srand (time(NULL)); //makes them random
     addbuttons(paths, ui->gridLayout_2);
+    FileWrite("New User");
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::FileWrite(QString text){
+    time_t now = time(0);
+    char* dt = ctime(&now);
+    QFile file("Log.txt");
+
+    if ( file.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text) )
+    {
+        QTextStream stream( &file );
+        stream << dt << text << endl;
+    }
+    file.close();
 }
 
 void MainWindow::genPasswords(std::vector<QString> *Acc){
@@ -63,9 +78,7 @@ void MainWindow::addbuttons(std::vector<QString> path, QGridLayout *layout)
                 button->setFlat(true);
                 QString temp = path[(i*5)+k];
                 connect(button, &QPushButton::clicked,[this,button,temp](){ //button code lamda function
-                  // button->setEnabled(false);
                    MainWindow::addSubmit(temp);
-
                 });
 
                 button->setIcon(ButtonIcon);
@@ -77,9 +90,10 @@ void MainWindow::addbuttons(std::vector<QString> path, QGridLayout *layout)
     }
 }
 void MainWindow::addSubmit(QString temp){
+    //*stream << temp << " has been added to Password" <<endl;
+    FileWrite(temp+" Was selected");
     userSubmit->push_back(temp);
 }
-
 
 void MainWindow::pwdAssign(std::vector<QString> *givenAccountOne){ //verified that all fo the passwor strings are accounted for
     /*Spencer TO DO:
@@ -141,15 +155,14 @@ void MainWindow::pwdAssign(std::vector<QString> *givenAccountOne){ //verified th
     //setting into the vector for storing ~~Different functions for different logins?~~
     //have if else statements to see which password it is then compare that way // passing variables allong?
 
+    FileWrite("Password has been set as: "+firstPas+", "+secondPas+", "+thirdPas+", "+fourthPas+", "+fifthPas);
+
     (*givenAccountOne).push_back(firstPas);
     (*givenAccountOne).push_back(secondPas);
     (*givenAccountOne).push_back(thirdPas);
     (*givenAccountOne).push_back(fourthPas);
     (*givenAccountOne).push_back(fifthPas);
-
-    //testing andrews function
-    //qDebug() << validPassword(givenAccountOne, givenAccountOne); //should trigger true because their same vector
-}
+    }
 
 bool MainWindow::validPassword(std::vector<QString> *enteredPassword, std::vector<QString> *givenAccountOne){
 
@@ -174,41 +187,59 @@ void MainWindow::testingPass(){//controll method for Testing Password
 
         if(used[0] ==false && rando == 1){
             ui->label_2->setText("Logging Into: E-Mail");
+            FileWrite("#Asking for Email password");
             qDebug()<<"1";
             used[0]=true;
             moveOn =true;
         }else if(used[1]==false && rando == 2){
             ui->label_2->setText("Logging Into: Banking");
+            FileWrite("#Asking for Bank password");
             qDebug()<<"2";
             used[1]=true;
             moveOn =true;
         }else if(used[2]==false && rando == 3){
             ui->label_2->setText("Logging Into: Shopping");
+            FileWrite("#Asking for Shopping");
             qDebug()<<"3";
             used[2]=true;
             moveOn =true;
         }else if(used[0]== true && used[1] == true && used[2]==true){
             //break;
+            FileWrite("They have Finished Their Testing");
+            FileWriteSpam();
             qDebug()<<"finished";
             moveOn =true;
+            userSubmit->clear();
+            FileWrite("New User");
+            ui->stackedWidget->setCurrentWidget(ui->page);
+            used[0] = false;
+            used[1] = false;
+            used[2] = false;
+            BankPass->clear();
+            ShoppingPass->clear();
+            EMailPass->clear();
+            userSubmit->clear();
         }
     }
 }
 
 void MainWindow::on_pushButton_clicked()
 {//Test Password
+     FileWrite("#Attempt #"+ QString::number(attempt + 1));
     if(ui->label_2->text().compare("Logging Into: E-Mail")==0){
         attempt++;
-        if(attempt<3){
+        if(attempt<=3){
             if(validPassword(userSubmit, EMailPass)){
                 userSubmit->clear();
+                FileWrite("#Succsessfully Entered E-mail Password");
                 qDebug()<<"Succsess";
                 attempt=0;
                 used[0]==true;
                 testingPass();
-            }
+            }else{FileWrite("Passwords Did not match");}
         }else{
             qDebug()<< "to many attempts";
+            FileWrite("Ran out of attempts");
             userSubmit->clear();
             used[0]=true;
             attempt=0;
@@ -216,16 +247,18 @@ void MainWindow::on_pushButton_clicked()
         }
     }else if(ui->label_2->text().compare("Logging Into: Banking")==0){
         attempt++;
-        if(attempt<3){
+        if(attempt<=3){
             if(validPassword(userSubmit, BankPass)){
                 userSubmit->clear();
+                FileWrite("#Succsessfully Entered Banking Password");
                 qDebug()<<"Succsess";
                 attempt=0;
                 used[1]=true;
                 testingPass();
-            }
+            }else{FileWrite("Passwords Did not match");}
         }else{
             qDebug()<< "to many attempts";
+            FileWrite("Ran out of attempts");
             userSubmit->clear();
             used[1]=true;
             attempt=0;
@@ -233,16 +266,18 @@ void MainWindow::on_pushButton_clicked()
         }
     }else if(ui->label_2->text().compare("Logging Into: Shopping")==0){
         attempt++;
-        if(attempt<3){
+        if(attempt<=3){
             if(validPassword(userSubmit, ShoppingPass)){
                 userSubmit->clear();
+                FileWrite("#Succsessfully Entered Shopping Password");
                 qDebug()<<"Succsess";
                 attempt=0;
                 used[2]=true;
                 testingPass();
-            }
+            }else{FileWrite("Passwords Did not match");}
         }else{
             qDebug()<< "to many attempts";
+            FileWrite("Ran out of attempts");
             userSubmit->clear();
             attempt=0;
             used[2]=true;
@@ -256,26 +291,42 @@ void MainWindow::on_pushButton_4_clicked()
 {
     ui->stackedWidget->setCurrentWidget(ui->EnterPassPage);
      ui->stackedWidget->show();
-    testingPass();
+     FileWrite("#now Testing If user remembers Passwords");
+     userSubmit->clear();
+     testingPass();
 }
 
 void MainWindow::on_pushButton_3_clicked()
 {
+    used[0] = false;
+    used[1] = false;
+    used[2] = false;
+    BankPass->clear();
+    ShoppingPass->clear();
+    EMailPass->clear();
+    userSubmit->clear();
+
  ui->stackedWidget->setCurrentWidget(ui->GenPassPage);
+ FileWrite("#Generating E-Mail Password");
  genPasswords(EMailPass);
  ui->GenPasslbl->setText("Your E-Mail Password:");
  addbuttons(paths, ui->TestgridLayout);
+
 }
 
 void MainWindow::on_pushButton_5_clicked(){//Testing Password
         if(ui->GenPasslbl->text().compare("Your E-Mail Password:")==0){
             if(validPassword(userSubmit,EMailPass)){
+                FileWrite("#Entered Correct Password");
+                FileWrite("#Generating Banking Password");
                 genPasswords(BankPass);
                 userSubmit->clear();
                 ui->GenPasslbl->setText("Your Banking Password:");
                }else{qDebug()<<"Wrong Emailing Password Try, Again";userSubmit->clear();}
         }else if(ui->GenPasslbl->text().compare("Your Banking Password:")==0){
             if(validPassword(userSubmit,BankPass)){
+                FileWrite("#Entered Correct Password");
+                FileWrite("#Generating Shopping Password");
                 genPasswords(ShoppingPass);
                 userSubmit->clear();
                 ui->GenPasslbl->setText("Your Shopping Password:");
@@ -283,8 +334,47 @@ void MainWindow::on_pushButton_5_clicked(){//Testing Password
         }else if(ui->GenPasslbl->text().compare("Your Shopping Password:")==0){
             if(validPassword(userSubmit,ShoppingPass)){
                 userSubmit->clear();
+                FileWrite("#Entered Correct Password");
+                FileWrite("#Finished Memorizing Passwords");
                 ui->stackedWidget->setCurrentWidget(ui->page);
             }else{qDebug()<<"Wrong Shopping Password Try, Again";userSubmit->clear();}
         }
         //here stuff
     }
+
+void MainWindow::on_pushButton_6_clicked()
+{
+    FileWrite("#Cleared User entery array");
+    userSubmit->clear();
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    FileWrite("Exited to main screen, Clearing userSubmit and returnig to main screen");
+    ui->stackedWidget->setCurrentWidget(ui->page);
+    used[0] = false;
+    used[1] = false;
+    used[2] = false;
+    FileWriteSpam();
+    BankPass->clear();
+    ShoppingPass->clear();
+    EMailPass->clear();
+    userSubmit->clear();
+
+}
+
+void MainWindow::FileWriteSpam(){
+
+    QFile file("Log.txt");
+
+    if ( file.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text) )
+    {
+        QTextStream stream( &file );
+        stream << endl;
+        stream << endl;
+        stream << endl;
+        stream << endl;
+        stream << endl;
+    }
+    file.close();
+}

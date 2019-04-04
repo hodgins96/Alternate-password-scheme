@@ -12,6 +12,12 @@
 #include <typeinfo>
 #include <iostream>
 #include <time.h>
+#include <QFile>
+#include<QTextStream>
+#include <QIODevice>
+#include <ctime>
+
+
 
 namespace Ui {
 class MainWindow;
@@ -31,6 +37,9 @@ public:
     bool Testing = false;
     void addSubmit(QString temp);
     void testingPass();
+    void FileWrite(QString text);
+    void FileWriteSpam();
+
 
 private:
     std::vector<QString> paths{
@@ -55,6 +64,7 @@ private:
     QString fourthPas;
     QString fifthPas;
 
+
 private slots:
     void on_pushButton_clicked();
 
@@ -65,6 +75,8 @@ private slots:
     void on_pushButton_5_clicked();
 
 
+    void on_pushButton_6_clicked();
+    void on_pushButton_2_clicked();
 };
 
 #endif // MAINWINDOW_H
